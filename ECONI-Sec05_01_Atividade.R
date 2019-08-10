@@ -1,65 +1,117 @@
+############################
+####### M√©todos Exatos ######
+### www.metodosexatos.com ###
+#############################
+
+# Autor: Andr√© Santos | andre@metodosexatos.com.br
+# 08/08/2019
+
+# To cite R in publications use:
+# citation()
+
+###################################################################
+
+#--------------------- Diret√≥rios e Arquivos ---------------------#
+
+# getwd() # Qual o diret√≥rio que o script est√° apontando
+# list.files() # Quais arquivos est√£o contidos no diret√≥rio
+# setwd("C:/Users/andre/OneDrive/Documentos/PROJETOS/Metodos Exatos/Cursos/Curso017_Econometria_I/Curso-ECON_Material_apoio/Datasets_Econ-I")
+
+# Leitura de uma base externa
+# leitura_csv2 <- read.csv2(file = "exemplo.csv")
+
+# Exporta√ß√£o de um arquivo no formato csv2 (formato brasileiro):
+# write.csv2(frame_carros, "exemplo.csv")
+
+# Leitura de arquivo externo usando pacotes
+
+# if (!require(package)) install.packages("xlsx")
+# library(xlsx)
+
+# read.xlsx("exemplo.xlsx", sheetName = "nome_planilha")
+
+# Salvar uma arquivo no formato xlsx
+# write.xlsx(nome_dataframe, "exemplo.xlsx")
+
+#---------------------------------------------------------------#
+
+#************* Atividade M√≥dulo 5 - Estima√ß√£o de Intervalo e Teste de Hip√≥teses *************#
+
+# Preparar ambiente de trabalho
+
+setwd("E:/Dropbox/M√©todos Exatos/Cursos/Curso017_Econometria_I/Curso-ECON_Material_apoio/Datasets_Econ-I") # aponta o R para a respectiva pasta
+getwd() # confere qual pasta o R est√° apontando
+list.files() # indica quais arquivos est√£o contidos na pasta de trabalho
+base <- read.csv2("Tab_5-5_rem.csv") # carrega base de dados
+str(base) # ver a estrutura da base
+
+# Pacotes requeridos
+
+install.packages("broom")     # pacote para extra√ß√£o de informa√ß√µes do modelo. Usar comando: "tidy(FRA)"
+install.packages("normtest")  # pacote para teste de normalidade. Usar comando: "jb.norm.test()"
+library("broom")
 library("normtest")
 
-# FunÁ„o de Regress„o Amostral (FRA) e armazenamento das estatÌsticas para an·lises
+# Fun√ß√£o de Regress√£o Amostral (FRA) e armazenamento das estat√≠sticas para an√°lises
 
-FRA <- lm(rem~gast, data = base)   # modelo de regress„o amostral
-estatisticas <- summary(FRA)  # estatÌsticas do modelo
-analise_var <- anova(FRA)     # an·lise de vari‚ncia
-fra <- tidy(FRA)              # permite extrair estatÌsticas do modelo
+FRA <- lm(rem~gast, data = base)   # modelo de regress√£o amostral
+estatisticas <- summary(FRA)  # estat√≠sticas do modelo
+analise_var <- anova(FRA)     # an√°lise de vari√¢ncia
+fra <- tidy(FRA)              # permite extrair estat√≠sticas do modelo
 
-# a. Obtenha as estimativas dos par‚metros, os erros padr„o, r≤, SQR e SQE.
+# a. Obtenha as estimativas dos par√¢metros, os erros padr√£o, r¬≤, SQR e SQE.
 
-fra$estimate             # obtÈm as estimativas dos par‚metros beta 1 (intercepto) e beta 2 (coeficiente angular), respectivamente
-fra$std.error            # obtÈm os termos de erro dos estimadores dos coeficientes beta 1 e beta 2, respectivamente
-estatisticas$r.squared   # obtÈm o r≤ do modelo (medida de qualidade de ajuste da linha de regress„o)
-analise_var$`Sum Sq`     # obtÈm as somas dos quadrados (SQ) dos valores estimados e dos resÌduos, respectivamente
+fra$estimate             # obt√©m as estimativas dos par√¢metros beta 1 (intercepto) e beta 2 (coeficiente angular), respectivamente
+fra$std.error            # obt√©m os termos de erro dos estimadores dos coeficientes beta 1 e beta 2, respectivamente
+estatisticas$r.squared   # obt√©m o r¬≤ do modelo (medida de qualidade de ajuste da linha de regress√£o)
+analise_var$`Sum Sq`     # obt√©m as somas dos quadrados (SQ) dos valores estimados e dos res√≠duos, respectivamente
 
-# b. Represente graficamente os dados com a linha de regress„o.
+# b. Represente graficamente os dados com a linha de regress√£o.
 
-windows()          # abri uma janela para exibir o gr·fico
-disp <- plot(base$gast,base$rem, main = "Sal·rios (prof.) x Despesas (alunos)",
-             xlab = "Despesas com Alunos", ylab = "RemuneraÁ„o Anual")  # armazena o gr·fico de dispers„o na respectivo objeto
-grid(disp)         # aplica grade ao gr·fico
-abline(FRA, col = "red")        # adiciona a linha de regress„o ao gr·fico
+windows()          # abri uma janela para exibir o gr√°fico
+disp <- plot(base$gast,base$rem, main = "Sal√°rios (prof.) x Despesas (alunos)",
+             xlab = "Despesas com Alunos", ylab = "Remunera√ß√£o Anual")  # armazena o gr√°fico de dispers√£o na respectivo objeto
+grid(disp)         # aplica grade ao gr√°fico
+abline(FRA, col = "red")        # adiciona a linha de regress√£o ao gr√°fico
 
-# c. Interprete os resultados da regress„o. Faz sentido do ponto de vista econÙmico?
+# c. Interprete os resultados da regress√£o. Faz sentido do ponto de vista econ√¥mico?
 
-#- O modelo indica uma relaÁ„o positiva entre as despesas com alunos e remuneraÁ„o anual dos professores.
-#- De acordo com as estimativas do modelo, a remuneraÁ„o inicial (anual) para um professor È de aproximadamente $12.129 (beta 1), e
-#- para cada dolar a mais de gastos com alunos, espera-se um acrescimo no sal·rio anual de um professor de $3,30 (beta 2).
-#- Do ponto de vista econÙmico faz sentido. De acordo com a secret·ria executiva do MEC, Maria Helena Guimar„es de Castro,
-#- todos paÌses acabam tendo gastos maiores com estudantes da universidade em diante e uma das justificativas, segundo ela,
-#- seria os sal·rios dos professores (fonte: https://oglobo.globo.com/sociedade/educacao/relatorio-destaca-diferenca-entre-salarios-de-professores-custo-por-aluno-no-brasil-20122101)
+#- O modelo indica uma rela√ß√£o positiva entre as despesas com alunos e remunera√ß√£o anual dos professores.
+#- De acordo com as estimativas do modelo, a remunera√ß√£o inicial (anual) para um professor √© de aproximadamente $12.129 (beta 1), e
+#- para cada dolar a mais de gastos com alunos, espera-se um acrescimo no sal√°rio anual de um professor de $3,30 (beta 2).
+#- Do ponto de vista econ√¥mico faz sentido. De acordo com a secret√°ria executiva do MEC, Maria Helena Guimar√£es de Castro,
+#- todos pa√≠ses acabam tendo gastos maiores com estudantes da universidade em diante e uma das justificativas, segundo ela,
+#- seria os sal√°rios dos professores (fonte: https://oglobo.globo.com/sociedade/educacao/relatorio-destaca-diferenca-entre-salarios-de-professores-custo-por-aluno-no-brasil-20122101)
 
-# d. EstabeleÁa um intervalo de confianÁa de 95% para beta 2. VocÍ rejeitaria a hipÛtese de que o verdadeiro coeficiente angular È 3,0?
+# d. Estabele√ßa um intervalo de confian√ßa de 95% para beta 2. Voc√™ rejeitaria a hip√≥tese de que o verdadeiro coeficiente angular √© 3,0?
 
-ic_betas <- confint.lm(FRA, level = 0.95) # determina os intervalos de confianÁa para os estimadores dos coeficientes
-print(ic_betas[2,])                       # exibe o intervalo de confianÁa de beta 2
-# Como H0: beta 2 = 3.0 caiu dentro da regi„o de aceitaÁ„o eu falho em rejeitar a hipÛtese nula. Ou seja,
-# nas condiÁıes propostas podemos considerar o valor de 3.0 como sendo o verdadeiro valor de beta 2.
+ic_betas <- confint.lm(FRA, level = 0.95) # determina os intervalos de confian√ßa para os estimadores dos coeficientes
+print(ic_betas[2,])                       # exibe o intervalo de confian√ßa de beta 2
+# Como H0: beta 2 = 3.0 caiu dentro da regi√£o de aceita√ß√£o eu falho em rejeitar a hip√≥tese nula. Ou seja,
+# nas condi√ß√µes propostas podemos considerar o valor de 3.0 como sendo o verdadeiro valor de beta 2.
 
-# e. Obtenha a mÈdia e o valor individual previsto de Rem se as despesas por aluno forem de $ 5.000. EstabeleÁa tambÈm intervalos de confianÁa para a mÈdia real e para o valor individual de Rem para a despesa dada.
+# e. Obtenha a m√©dia e o valor individual previsto de Rem se as despesas por aluno forem de $ 5.000. Estabele√ßa tamb√©m intervalos de confian√ßa para a m√©dia real e para o valor individual de Rem para a despesa dada.
 
 Xi <- data.frame(gast=5000)                           # novo conjunto de preditoras. Requer que seja um data.frame com o mesmo nome do banco de dados original.
-predict(FRA, newdata = Xi, interval = "confidence")   # intervalo de confianÁa para mÈdia
-predict(FRA, newdata = Xi, interval = "prediction")   # intervalo de confianÁa para a resposta individual
+predict(FRA, newdata = Xi, interval = "confidence")   # intervalo de confian√ßa para m√©dia
+predict(FRA, newdata = Xi, interval = "prediction")   # intervalo de confian√ßa para a resposta individual
 
-# f. Como vocÍ testaria a hipÛtese de normalidade do termo de erro? Mostre o(s) teste(s) que usou.
+# f. Como voc√™ testaria a hip√≥tese de normalidade do termo de erro? Mostre o(s) teste(s) que usou.
 
-#- Histograma dos resÌduos
+#- Histograma dos res√≠duos
 windows()
-hist(FRA$residuals, main = "Resposta em sal·rio-hora mÈdio", 
-     xlab = "ResÌduo", ylab = "FrequÍncia", col = "darkblue", border = "black")
+hist(FRA$residuals, main = "Resposta em sal√°rio-hora m√©dio", 
+     xlab = "Res√≠duo", ylab = "Frequ√™ncia", col = "darkblue", border = "black")
 abline(v=median(FRA$residuals), col="green", lwd=2, lty=2)
 abline(v=mean(FRA$residuals), col="red", lwd=2, lty=2)
 legend(x="topright",c("Mediana", "Media"), col = c("green","red"), lty = c(2,2), lwd = c(2,2), box.lty = 0)
 
-#- Gr·fico de Probabilidade Normal (GPN)
+#- Gr√°fico de Probabilidade Normal (GPN)
 windows()
-qqnorm(residuals(FRA), ylab = "Quantis teÛricos", xlab = "ResÌduos", main = "GPN dos ResÌduos")
+qqnorm(residuals(FRA), ylab = "Quantis te√≥ricos", xlab = "Res√≠duos", main = "GPN dos Res√≠duos")
 qqline(residuals(FRA))
 
 
-# Teste de normalidade dos resÌduos (Jarque-Bera)
+# Teste de normalidade dos res√≠duos (Jarque-Bera)
 
-jb.norm.test(FRA$residuals) # se o valor da estatÌstica JB=0 e p<alfa, ent„o podemos rejeitar a hipÛtese nula de que a distribuiÁ„o de resÌduos È normal.
+jb.norm.test(FRA$residuals) # se o valor da estat√≠stica JB=0 e p<alfa, ent√£o podemos rejeitar a hip√≥tese nula de que a distribui√ß√£o de res√≠duos √© normal.
