@@ -1,0 +1,76 @@
+############################
+####### Métodos Exatos ######
+### www.metodosexatos.com ###
+#############################
+
+# Autor: André Santos | andre@metodosexatos.com.br
+# 10/08/2019
+
+# To cite R in publications use:
+# citation()
+
+###################################################################
+
+#--------------------- Diretórios e Arquivos ---------------------#
+
+# getwd() # Qual o diretório que o script está apontando
+# list.files() # Quais arquivos estão contidos no diretório
+# setwd("C:/Users/andre/OneDrive/Documentos/PROJETOS/Metodos Exatos/Cursos/Curso017_Econometria_I/Curso-ECON_Material_apoio/Datasets_Econ-I")
+
+# Leitura de uma base externa
+# leitura_csv2 <- read.csv2(file = "exemplo.csv")
+
+# Exportação de um arquivo no formato csv2 (formato brasileiro):
+# write.csv2(frame_carros, "exemplo.csv")
+
+# Leitura de arquivo externo usando pacotes
+
+# if (!require(package)) install.packages("xlsx")
+# library(xlsx)
+
+# read.xlsx("exemplo.xlsx", sheetName = "nome_planilha")
+
+# Salvar uma arquivo no formato xlsx
+# write.xlsx(nome_dataframe, "exemplo.xlsx")
+
+#---------------------------------------------------------------#
+
+#************* Atividade Módulo 6 - Regressão com variáveis padronizadas *************#
+
+# Prepararando base de dados
+setwd("E:/Dropbox/Métodos Exatos/Cursos/Curso017_Econometria_I/Curso-ECON_Material_apoio/Datasets_Econ-I") # aponta o R para a respectiva pasta
+getwd() # confere qual pasta o R está apontando
+list.files() # indica quais arquivos estão contidos na pasta de trabalho
+base <- read.csv2("Tab_6-2_estudo_iipbl.csv") # carrega base de dados
+str(base) # ver a estrutura da base
+
+base.z <- data.frame(base[,1],scale(base[,2:5])) # padroniza as variáveis pela média e transforma em um data frame e acrescenta a coluna de data da base original
+print(base.z)
+#- Nota:
+#       IIPBBL(Y1):	 Investimento interno privado, em bilhões de dólares de 2000.
+#       IIPBM (Y2):  Investimento interno privado bruto, em milhões de dólares de 2000.
+#        PIBB (X1):  Produto interno bruto, em bilhões de dólares de 2000.
+#        PIBM (X2):  Produto interno bruto, em milhões de dólares de 2000.
+
+# Modelos e estatísticas
+#- Modelo com variáveis originais
+FRA <- lm(IIPBBL~PIBB, data = base)   # modelo de regressão amostral
+summary(FRA)                          # estatísticas do modelo
+#- Modelo com variáveis padronizadas
+FRA.z <- lm(IIPBBL~PIBB, data = base.z)   # modelo de regressão amostral
+summary(FRA.z)                            # estatísticas do modelo
+#- Modelo com variáveis originais
+FRA.sem.beta1 <- lm(IIPBBL~PIBB-1, data = base)   # modelo de regressão amostral
+summary(FRA.sem.beta1)                            # estatísticas do modelo
+
+FRA$coefficients              # estimativas dos coeficientes (com intercepto)
+FRA.sem.beta1$coefficients    # estimativas dos coeficientes (sem interceptp)
+
+# Valores previsto do modelo
+EY <- predict(FRA)                              # valores estimados de Y com as variáveis originais
+EY.z <- predict(FRA.z)                          # valores estimados de Y com as variáveis padronizadas
+EY2 <- predict(FRA.sem.beta1)                   # valores estimados de Y sem o intercepto no modelo
+EY1 <- EY.z*sd(base$IIPBBL)+mean(base$IIPBBL)   # valores estimados de Y com EY.z
+Y <- data.frame(Y=base$IIPBBL)                  # monta uma tabela com os valores originais de Y e renome para "Y"
+tabela.y <- data.frame(EY,EY.z,EY1)             # arruma os valores estimados em EY, EY.z e EY1 em uma tabela
+head(tabela.y, 5)                               # exibe as 5 primeiras linhas da tabela
