@@ -1,0 +1,57 @@
+############################
+####### Métodos Exatos ######
+### www.metodosexatos.com ###
+#############################
+
+# Autor: André Santos | andre@metodosexatos.com.br
+# 17/08/2019
+
+# To cite R in publications use:
+# citation()
+
+###################################################################
+
+#--------------------- Diretórios e Arquivos ---------------------#
+
+# getwd() # Qual o diretório que o script está apontando
+# list.files() # Quais arquivos estão contidos no diretório
+# setwd("C:/Users/andre/OneDrive/Documentos/PROJETOS/Metodos Exatos/Cursos/Curso017_Econometria_I/Curso-ECON_Material_apoio/Datasets_Econ-I")
+
+# Leitura de uma base externa
+# leitura_csv2 <- read.csv2(file = "exemplo.csv")
+
+# Exportação de um arquivo no formato csv2 (formato brasileiro):
+# write.csv2(frame_carros, "exemplo.csv")
+
+# Leitura de arquivo externo usando pacotes
+
+# if (!require(package)) install.packages("xlsx")
+# library(xlsx)
+
+# read.xlsx("exemplo.xlsx", sheetName = "nome_planilha")
+
+# Salvar uma arquivo no formato xlsx
+# write.xlsx(nome_dataframe, "exemplo.xlsx")
+
+#---------------------------------------------------------------#
+
+#************* Módulo 07 - Modelos Polinomiais  *************#
+# Prepararando base de dados
+Y <- c(193, 226, 240, 244, 257, 260, 274, 297, 350, 420)          # valores da variável resposta
+X <- c(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)                             # valores da variável explanatória
+plot(X,Y)                                                         # diagrama de dispersão para identificar qual melhor modelo polinomial a ser usado
+base <- data.frame(Y,X,X^2,X^3)                                   # base de dados com as potências de X
+names(base) <- c("Y","X1","X2","X3")                              # renomeia as colunas
+str(base)                                                         # ver a estrutura da base
+head(base)                                                        # ler as 6 primeiras linhas da base
+
+# Função de Regressão Amostral
+FRA <- lm(Y~X1+X2+X3, data = base) # modelo de regressão amostral (para excluir o intercepto colocar "-1" depois da última variável explanatória:"MI~PNBpc+TAF-1" )
+print(FRA)                         # saída do modelo
+summary(FRA)                       # estatística da FRA
+
+# Valores previsto do modelo
+EY <- predict(FRA)                            # valores estimados de logY
+Ys <- data.frame(base$Y,EY)                   # tabela com valores observados e estimados de Y
+names(Ys) <- c("Y", "E(Y)")                   # renomeia as colunas
+head (Ys)                                     # exibe o resultado das 6 primeiras linhas
