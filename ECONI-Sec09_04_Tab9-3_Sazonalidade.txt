@@ -1,0 +1,50 @@
+############################
+####### Métodos Exatos ######
+### www.metodosexatos.com ###
+#############################
+
+# Autor: André Santos | andre@metodosexatos.com.br
+# 25/08/2019
+
+# To cite R in publications use:
+# citation()
+
+###################################################################
+
+#--------------------- Diretórios e Arquivos ---------------------#
+
+# getwd() # Qual o diretório que o script está apontando
+# list.files() # Quais arquivos estão contidos no diretório
+# setwd("E:/Dropbox/Métodos Exatos/Cursos/Curso017_Econometria_I/Curso-ECON_Material_apoio/Datasets_Econ-I")
+
+# Leitura de uma base externa
+# leitura_csv2 <- read.csv2(file = "exemplo.csv")
+
+# Exportação de um arquivo no formato csv2 (formato brasileiro):
+# write.csv2(frame_carros, "exemplo.csv")
+
+# Leitura de arquivo externo usando pacotes
+
+# if (!require(package)) install.packages("xlsx")
+# library(xlsx)
+
+# read.xlsx("exemplo.xlsx", sheetName = "nome_planilha")
+
+# Salvar uma arquivo no formato xlsx
+# write.xlsx(nome_dataframe, "exemplo.xlsx")
+
+#---------------------------------------------------------------#
+
+#************* Módulo 09 - Tabela 9.3 - Análise de Sazonalidade  *************#
+
+# Nota:
+#      REFR =	variável Y: total de geladeiras						
+#        D1 =	Variável dummy para o primeiro trimestre						
+#        D2 =	Variável dummy para o segundo trimestre
+#        D3 =	Variável dummy para o terceiro trimestre
+#        D4 =	Variável dummy para o quarto trimestre
+
+# Modelo
+base <- read.csv2("Tab_9-3_sazonalidade.csv")
+fra <- lm(REFR~0+D1+D2+D3+D4, data = base)
+summary(fra)
